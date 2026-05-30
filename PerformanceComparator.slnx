@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="PerformanceComparator.Tests/PerformanceComparator.Tests.csproj" />
+  <Project Path="PerformanceComparator/PerformanceComparator.csproj" />
+</Solution>
