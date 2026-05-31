@@ -1,0 +1,34 @@
+﻿@model PerformanceComparator.ViewModels.Admin.DashboardViewModel
+
+@{
+    ViewData["Title"] = "Admin Dashboard";
+}
+
+<h1>Admin Dashboard</h1>
+
+<div class="row mt-4">
+    <div class="col-md-4 mb-3">
+        <div class="card text-bg-primary">
+            <div class="card-body">
+                <h5 class="card-title">Funds</h5>
+                <p class="card-text display-4">@Model.FundCount</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-3">
+        <div class="card text-bg-success">
+            <div class="card-body">
+                <h5 class="card-title">Asset Classes</h5>
+                <p class="card-text display-4">@Model.AssetClassCount</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-3">
+        <div class="card text-bg-info">
+            <div class="card-body">
+                <h5 class="card-title">Content Blocks</h5>
+                <p class="card-text display-4">@Model.ContentBlockCount</p>
+            </div>
+        </div>
+    </div>
+</div>

@@ -22,12 +22,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Areas\Admin\Controllers\" />
     <Folder Include="Areas\Admin\Views\Funds\" />
     <Folder Include="Areas\Admin\Views\NavRecords\" />
     <Folder Include="Areas\Admin\Views\Shared\" />
     <Folder Include="Services\" />
-    <Folder Include="ViewModels\Admin\" />
     <Folder Include="wwwroot\uploads\logos\" />
   </ItemGroup>
 

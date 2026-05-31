@@ -37,10 +37,10 @@ builder.Services.Configure<Microsoft.AspNetCore.Http.Features.FormOptions>(optio
 
 var app = builder.Build();
 
-// ── Seed database (runs once; safe to call on every startup) ──────────────────
+// ── Seed database (Admin role + user) ─────────────────────────────────────────
 using (var scope = app.Services.CreateScope())
 {
-    await DbInitializer.SeedAsync(scope.ServiceProvider);
+    await SeedData.SeedAsync(scope.ServiceProvider);
 }
 
 // ── HTTP pipeline ─────────────────────────────────────────────────────────────
