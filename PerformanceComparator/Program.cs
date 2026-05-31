@@ -1,22 +1,49 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using PerformanceComparator.Data;
+using PerformanceComparator.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+// ── Database ─────────────────────────────────────────────────────────────────
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
+    ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(connectionString));
+    options.UseSqlite(connectionString));
+
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+// ── Identity ──────────────────────────────────────────────────────────────────
+builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
+{
+    options.SignIn.RequireConfirmedAccount = false; // simplified for university project
+})
+    .AddRoles<IdentityRole>()                          // enables [Authorize(Roles = "Admin")]
     .AddEntityFrameworkStores<ApplicationDbContext>();
+
+// ── MVC ───────────────────────────────────────────────────────────────────────
 builder.Services.AddControllersWithViews();
+
+// ── Application services (uncomment as you create each class) ─────────────────
+// builder.Services.AddScoped<IPerformanceService, PerformanceService>();
+// builder.Services.AddScoped<ICsvImportService, CsvImportService>();
+
+// ── File upload size limit (10 MB) ────────────────────────────────────────────
+builder.Services.Configure<Microsoft.AspNetCore.Http.Features.FormOptions>(options =>
+{
+    options.MultipartBodyLengthLimit = 10 * 1024 * 1024; // 10 MB
+});
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// ── Seed database (runs once; safe to call on every startup) ──────────────────
+using (var scope = app.Services.CreateScope())
+{
+    await DbInitializer.SeedAsync(scope.ServiceProvider);
+}
+
+// ── HTTP pipeline ─────────────────────────────────────────────────────────────
 if (app.Environment.IsDevelopment())
 {
     app.UseMigrationsEndPoint();
@@ -24,16 +51,21 @@ if (app.Environment.IsDevelopment())
 else
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
 app.UseHttpsRedirection();
 app.UseRouting();
 
+app.UseAuthentication();   // must come before UseAuthorization
 app.UseAuthorization();
 
 app.MapStaticAssets();
+
+// ── Routes ────────────────────────────────────────────────────────────────────
+app.MapControllerRoute(
+    name: "areas",
+    pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
 
 app.MapControllerRoute(
     name: "default",
@@ -41,6 +73,6 @@ app.MapControllerRoute(
     .WithStaticAssets();
 
 app.MapRazorPages()
-   .WithStaticAssets();
+    .WithStaticAssets();
 
 app.Run();
