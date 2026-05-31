@@ -7,7 +7,6 @@ namespace PerformanceComparator.Data
     public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
         : IdentityDbContext<ApplicationUser>(options)
     {
-        // ── Domain tables ────────────────────────────────────────────────────
         public DbSet<AssetClass> AssetClasses { get; set; }
         public DbSet<Fund> Funds { get; set; }
         public DbSet<NavRecord> NavRecords { get; set; }
@@ -15,54 +14,36 @@ namespace PerformanceComparator.Data
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            // Must call base first — configures all Identity tables
             base.OnModelCreating(builder);
 
-            // ── AssetClass ───────────────────────────────────────────────────
-            builder.Entity<AssetClass>(e =>
-            {
-                e.HasIndex(a => a.Slug).IsUnique();
-                e.Property(a => a.Name).HasMaxLength(100).IsRequired();
-                e.Property(a => a.Slug).HasMaxLength(100).IsRequired();
-            });
+            // ── Fund → AssetClass (many-to-one) ───────────────────────────────
+            builder.Entity<Fund>()
+                .HasOne(f => f.AssetClass)
+                .WithMany(a => a.Funds)
+                .HasForeignKey(f => f.AssetClassId)
+                .OnDelete(DeleteBehavior.Restrict);
 
-            // ── Fund ─────────────────────────────────────────────────────────
-            builder.Entity<Fund>(e =>
-            {
-                e.HasIndex(f => f.Ticker).IsUnique();
-                e.Property(f => f.Name).HasMaxLength(200).IsRequired();
-                e.Property(f => f.Ticker).HasMaxLength(20).IsRequired();
-                e.Property(f => f.Currency).HasMaxLength(3).IsRequired();
-                e.Property(f => f.LogoPath).HasMaxLength(500);
+            // ── NavRecord → Fund (many-to-one) ────────────────────────────────
+            builder.Entity<NavRecord>()
+                .HasOne(n => n.Fund)
+                .WithMany(f => f.NavRecords)
+                .HasForeignKey(n => n.FundId)
+                .OnDelete(DeleteBehavior.Cascade);
 
-                e.HasOne(f => f.AssetClass)
-                 .WithMany(a => a.Funds)
-                 .HasForeignKey(f => f.AssetClassId)
-                 .OnDelete(DeleteBehavior.Restrict); // don't cascade-delete funds
-            });
+            // ── NavRecord.Value precision ─────────────────────────────────────
+            builder.Entity<NavRecord>()
+                .Property(n => n.Value)
+                .HasPrecision(18, 6);
 
-            // ── NavRecord ────────────────────────────────────────────────────
-            builder.Entity<NavRecord>(e =>
-            {
-                // One NAV per fund per date — enforced at DB level
-                e.HasIndex(n => new { n.FundId, n.Date }).IsUnique();
+            // ── Unique index: no duplicate (FundId, Date) ─────────────────────
+            builder.Entity<NavRecord>()
+                .HasIndex(n => new { n.FundId, n.Date })
+                .IsUnique();
 
-                e.Property(n => n.Nav)
-                 .HasColumnType("TEXT")   // SQLite stores decimals as TEXT for precision
-                 .IsRequired();
-
-                e.HasOne(n => n.Fund)
-                 .WithMany(f => f.NavRecords)
-                 .HasForeignKey(n => n.FundId)
-                 .OnDelete(DeleteBehavior.Cascade); // deleting a fund removes its NAV history
-            });
-
-            // ── ContentBlock ─────────────────────────────────────────────────
-            builder.Entity<ContentBlock>(e =>
-            {
-                e.HasIndex(c => c.Key).IsUnique();
-                e.Property(c => c.Key).HasMaxLength(100).IsRequired();
-            });
+            // ── Unique index: ContentBlock.Key ────────────────────────────────
+            builder.Entity<ContentBlock>()
+                .HasIndex(c => c.Key)
+                .IsUnique();
         }
     }
 }
