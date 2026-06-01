@@ -1,0 +1,48 @@
+﻿@model PerformanceComparator.ViewModels.Admin.FundDetailViewModel
+
+@{
+    ViewData["Title"] = "Fund Details";
+}
+
+<h1>@Model.Name</h1>
+
+<dl class="row mt-3">
+    <dt class="col-sm-3">Symbol</dt>
+    <dd class="col-sm-9"><code>@Model.Symbol</code></dd>
+
+    <dt class="col-sm-3">Asset Class</dt>
+    <dd class="col-sm-9">@Model.AssetClassName</dd>
+
+    <dt class="col-sm-3">Provider</dt>
+    <dd class="col-sm-9">@(Model.Provider ?? "—")</dd>
+
+    <dt class="col-sm-3">Description</dt>
+    <dd class="col-sm-9">@(Model.Description ?? "—")</dd>
+
+    <dt class="col-sm-3">Currency</dt>
+    <dd class="col-sm-9">@Model.Currency</dd>
+
+    <dt class="col-sm-3">Benchmark</dt>
+    <dd class="col-sm-9">@(Model.IsBenchmark ? "Yes" : "No")</dd>
+
+    <dt class="col-sm-3">Created At</dt>
+    <dd class="col-sm-9">@Model.CreatedAt.ToString("yyyy-MM-dd HH:mm")</dd>
+
+    <dt class="col-sm-3">NAV Records</dt>
+    <dd class="col-sm-9">@Model.NavRecordCount</dd>
+
+    <dt class="col-sm-3">Data Range</dt>
+    <dd class="col-sm-9">
+        @if (Model.NavDataFrom.HasValue && Model.NavDataTo.HasValue)
+        {
+            @($"{Model.NavDataFrom.Value:yyyy-MM-dd} — {Model.NavDataTo.Value:yyyy-MM-dd}")
+        }
+        else
+        {
+            <span class="text-muted">No NAV data uploaded yet.</span>
+        }
+    </dd>
+</dl>
+
+<a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-secondary">Edit</a>
+<a asp-action="Index" class="btn btn-secondary">Back to List</a>

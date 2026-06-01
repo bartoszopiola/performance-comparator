@@ -1,0 +1,50 @@
+﻿@model PerformanceComparator.ViewModels.Admin.FundIndexViewModel
+
+@{
+    ViewData["Title"] = "Funds";
+}
+
+<h1>Funds</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Create New</a>
+</p>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Symbol</th>
+            <th>Asset Class</th>
+            <th>Provider</th>
+            <th>Currency</th>
+            <th>Benchmark</th>
+            <th>NAV Records</th>
+            <th style="width: 200px;">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Funds)
+        {
+            <tr>
+                <td>@item.Name</td>
+                <td><code>@item.Symbol</code></td>
+                <td>@item.AssetClassName</td>
+                <td>@(item.Provider ?? "—")</td>
+                <td>@item.Currency</td>
+                <td>@(item.IsBenchmark ? "Yes" : "No")</td>
+                <td>@item.NavRecordCount</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary">Edit</a>
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-info">Details</a>
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@if (!Model.Funds.Any())
+{
+    <div class="alert alert-info">No funds yet. Create one to get started.</div>
+}
