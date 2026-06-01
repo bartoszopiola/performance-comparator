@@ -22,7 +22,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Areas\Admin\Views\Funds\" />
     <Folder Include="Areas\Admin\Views\NavRecords\" />
     <Folder Include="Areas\Admin\Views\Shared\" />
     <Folder Include="Services\" />

@@ -12,6 +12,7 @@
             <div class="card-body">
                 <h5 class="card-title">Funds</h5>
                 <p class="card-text display-4">@Model.FundCount</p>
+                <a asp-controller="Funds" asp-action="Index" class="btn btn-light btn-sm">Manage Funds</a>
             </div>
         </div>
     </div>
@@ -20,6 +21,7 @@
             <div class="card-body">
                 <h5 class="card-title">Asset Classes</h5>
                 <p class="card-text display-4">@Model.AssetClassCount</p>
+                <a asp-controller="AssetClasses" asp-action="Index" class="btn btn-light btn-sm">Manage Asset Classes</a>
             </div>
         </div>
     </div>
