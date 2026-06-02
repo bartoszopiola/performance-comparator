@@ -14,5 +14,6 @@
         public int NavRecordCount { get; set; }
         public DateTime? NavDataFrom { get; set; }
         public DateTime? NavDataTo { get; set; }
+        public string? LogoFileName { get; set; }
     }
 }

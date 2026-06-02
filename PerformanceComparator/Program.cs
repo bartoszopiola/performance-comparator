@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using PerformanceComparator.Data;
 using PerformanceComparator.Models;
+using PerformanceComparator.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,9 +26,9 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
 // ── MVC ───────────────────────────────────────────────────────────────────────
 builder.Services.AddControllersWithViews();
 
-// ── Application services (uncomment as you create each class) ─────────────────
+// ── Application services ───────────────────────────────────────────────────────
+builder.Services.AddScoped<ICsvNavImporter, CsvNavImporter>();
 // builder.Services.AddScoped<IPerformanceService, PerformanceService>();
-// builder.Services.AddScoped<ICsvImportService, CsvImportService>();
 
 // ── File upload size limit (10 MB) ────────────────────────────────────────────
 builder.Services.Configure<Microsoft.AspNetCore.Http.Features.FormOptions>(options =>

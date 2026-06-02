@@ -8,9 +8,10 @@
 
 <div class="row">
     <div class="col-md-8">
-        <form asp-action="Edit" method="post">
+        <form asp-action="Edit" method="post" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="ExistingLogoFileName" />
 
             <div class="mb-3">
                 <label asp-for="Name" class="form-label"></label>
@@ -50,6 +51,21 @@
             <div class="mb-3 form-check">
                 <input asp-for="IsBenchmark" class="form-check-input" />
                 <label asp-for="IsBenchmark" class="form-check-label"></label>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="LogoFile" class="form-label"></label>
+                @if (!string.IsNullOrEmpty(Model.ExistingLogoFileName))
+                {
+                    <div class="mb-2">
+                        <img src="~/uploads/logos/@Model.ExistingLogoFileName"
+                             alt="Current logo" style="max-height: 64px;" class="border rounded" />
+                        <div class="form-text">Current logo. Upload a new file to replace it.</div>
+                    </div>
+                }
+                <input asp-for="LogoFile" type="file" class="form-control" accept=".png,.jpg,.jpeg,.webp" />
+                <span asp-validation-for="LogoFile" class="text-danger"></span>
+                <div class="form-text">PNG, JPG or WEBP, max 2 MB.</div>
             </div>
 
             <button type="submit" class="btn btn-primary">Save</button>
