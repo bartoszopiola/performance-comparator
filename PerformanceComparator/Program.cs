@@ -28,7 +28,8 @@ builder.Services.AddControllersWithViews();
 
 // ── Application services ───────────────────────────────────────────────────────
 builder.Services.AddScoped<ICsvNavImporter, CsvNavImporter>();
-// builder.Services.AddScoped<IPerformanceService, PerformanceService>();
+builder.Services.AddScoped<IReturnCalculator, ReturnCalculator>();
+builder.Services.AddScoped<IRiskCalculator, RiskCalculator>();
 
 // ── File upload size limit (10 MB) ────────────────────────────────────────────
 builder.Services.Configure<Microsoft.AspNetCore.Http.Features.FormOptions>(options =>
