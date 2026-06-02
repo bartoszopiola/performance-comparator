@@ -31,6 +31,14 @@ namespace PerformanceComparator.ViewModels.Admin
         [Display(Name = "Is Benchmark")]
         public bool IsBenchmark { get; set; }
 
+        // ── Logo upload ──────────────────────────────────────────────────────
+        /// <summary>Optional new logo file uploaded via the form.</summary>
+        [Display(Name = "Logo")]
+        public IFormFile? LogoFile { get; set; }
+
+        /// <summary>Existing logo filename (shown on edit, used to preview/delete).</summary>
+        public string? ExistingLogoFileName { get; set; }
+
         // ── Dropdown data (not bound on POST) ────────────────────────────────
         public SelectList? AssetClasses { get; set; }
     }

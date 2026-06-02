@@ -15,5 +15,6 @@
         public string Currency { get; set; } = string.Empty;
         public bool IsBenchmark { get; set; }
         public int NavRecordCount { get; set; }
+        public string? LogoFileName { get; set; }
     }
 }
