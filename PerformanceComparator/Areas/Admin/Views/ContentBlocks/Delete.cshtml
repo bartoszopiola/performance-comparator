@@ -1,0 +1,27 @@
+﻿@model PerformanceComparator.ViewModels.Admin.ContentBlockFormViewModel
+
+@{
+    ViewData["Title"] = "Delete Content Block";
+}
+
+<h1>Delete Content Block</h1>
+
+<h5>Are you sure you want to delete this content block?</h5>
+
+<dl class="row mt-3">
+    <dt class="col-sm-3">Key</dt>
+    <dd class="col-sm-9"><code>@Model.Key</code></dd>
+
+    <dt class="col-sm-3">Title</dt>
+    <dd class="col-sm-9">@Model.Title</dd>
+</dl>
+
+<div class="alert alert-warning">
+    If a page references this key, it will fall back to its default text.
+</div>
+
+<form asp-action="Delete" method="post">
+    <input type="hidden" asp-for="Id" />
+    <button type="submit" class="btn btn-danger">Delete</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+</form>

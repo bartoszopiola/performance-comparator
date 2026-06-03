@@ -26,58 +26,56 @@
     }
     else
     {
-        <div class="row g-4" id="fundGrid">
+        <div class="card-grid" id="fundGrid">
             @foreach (var fund in Model.Funds)
             {
-                <div class="col-sm-6 col-lg-4 fund-card" data-asset-class="@fund.AssetClassName">
-                    <article class="card h-100">
-                        <div class="card-body d-flex flex-column">
-                            <figure class="text-center mb-3" style="height: 64px;">
-                                @if (!string.IsNullOrEmpty(fund.LogoFileName))
-                                {
-                                    <img src="~/uploads/logos/@fund.LogoFileName" alt="@fund.Name logo"
-                                         style="max-height: 64px; max-width: 100%;" />
-                                }
-                                else
-                                {
-                                    <div class="d-flex align-items-center justify-content-center h-100 text-muted">
-                                        <span>@fund.Symbol</span>
-                                    </div>
-                                }
-                            </figure>
-
-                            <h2 class="h5 card-title">@fund.Name</h2>
-                            <p class="card-text mb-1"><code>@fund.Symbol</code></p>
-                            <p class="card-text text-muted mb-1">@fund.AssetClassName</p>
-                            @if (!string.IsNullOrEmpty(fund.Provider))
+                <article class="card h-100 fund-card" data-asset-class="@fund.AssetClassName">
+                    <div class="card-body d-flex flex-column">
+                        <figure class="text-center mb-3" style="height: 64px;">
+                            @if (!string.IsNullOrEmpty(fund.LogoFileName))
                             {
-                                <p class="card-text text-muted small mb-2">@fund.Provider</p>
+                                <img src="~/uploads/logos/@fund.LogoFileName" alt="@fund.Name logo"
+                                     style="max-height: 64px; max-width: 100%;" />
+                            }
+                            else
+                            {
+                                <div class="d-flex align-items-center justify-content-center h-100 text-muted">
+                                    <span>@fund.Symbol</span>
+                                </div>
+                            }
+                        </figure>
+
+                        <h2 class="h5 card-title">@fund.Name</h2>
+                        <p class="card-text mb-1"><code>@fund.Symbol</code></p>
+                        <p class="card-text text-muted mb-1">@fund.AssetClassName</p>
+                        @if (!string.IsNullOrEmpty(fund.Provider))
+                        {
+                            <p class="card-text text-muted small mb-2">@fund.Provider</p>
+                        }
+
+                        @if (fund.IsBenchmark)
+                        {
+                            <span class="badge bg-secondary mb-2 align-self-start">Benchmark</span>
+                        }
+
+                        <div class="mt-auto">
+                            @if (fund.NavCount >= 2 && fund.NavDataFrom.HasValue && fund.NavDataTo.HasValue)
+                            {
+                                <span class="badge bg-light text-dark border">
+                                    @fund.NavDataFrom.Value.ToString("yyyy-MM-dd") — @fund.NavDataTo.Value.ToString("yyyy-MM-dd")
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-light text-muted border">No data</span>
                             }
 
-                            @if (fund.IsBenchmark)
-                            {
-                                <span class="badge bg-secondary mb-2 align-self-start">Benchmark</span>
-                            }
-
-                            <div class="mt-auto">
-                                @if (fund.NavCount >= 2 && fund.NavDataFrom.HasValue && fund.NavDataTo.HasValue)
-                                {
-                                    <span class="badge bg-light text-dark border">
-                                        @fund.NavDataFrom.Value.ToString("yyyy-MM-dd") — @fund.NavDataTo.Value.ToString("yyyy-MM-dd")
-                                    </span>
-                                }
-                                else
-                                {
-                                    <span class="badge bg-light text-muted border">No data</span>
-                                }
-
-                                <a asp-action="Details" asp-route-id="@fund.Id" class="btn btn-sm btn-outline-primary mt-2 w-100">
-                                    View details
-                                </a>
-                            </div>
+                            <a asp-action="Details" asp-route-id="@fund.Id" class="btn btn-sm btn-outline-primary mt-2 w-100">
+                                View details
+                            </a>
                         </div>
-                    </article>
-                </div>
+                    </div>
+                </article>
             }
         </div>
     }

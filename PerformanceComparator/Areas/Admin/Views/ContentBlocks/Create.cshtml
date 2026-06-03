@@ -1,0 +1,40 @@
+﻿@model PerformanceComparator.ViewModels.Admin.ContentBlockFormViewModel
+
+@{
+    ViewData["Title"] = "Create Content Block";
+}
+
+<h1>Create Content Block</h1>
+
+<div class="row">
+    <div class="col-md-8">
+        <form asp-action="Create" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="mb-3">
+                <label asp-for="Key" class="form-label"></label>
+                <input asp-for="Key" class="form-control" placeholder="e.g. home.hero" />
+                <span asp-validation-for="Key" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Title" class="form-label"></label>
+                <input asp-for="Title" class="form-control" />
+                <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Body" class="form-label"></label>
+                <textarea asp-for="Body" class="form-control" rows="6"></textarea>
+                <span asp-validation-for="Body" class="text-danger"></span>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Create</button>
+            <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
