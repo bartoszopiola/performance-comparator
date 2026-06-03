@@ -15,7 +15,6 @@
         public DateTime? NavDataFrom { get; set; }
         public DateTime? NavDataTo { get; set; }
 
-        /// <summary>True when there are at least 2 NAV records (metrics computable).</summary>
         public bool HasEnoughData { get; set; }
 
         // ── Metrics over all available data ───────────────────────────────────
@@ -25,5 +24,8 @@
         public decimal MaxDrawdown { get; set; }
         public decimal Sharpe { get; set; }
         public decimal Sortino { get; set; }
+
+        // ── Chart data ────────────────────────────────────────────────────────
+        public List<(DateTime Date, decimal Value)> CumulativePoints { get; set; } = [];
     }
 }
