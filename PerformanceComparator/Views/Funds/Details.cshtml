@@ -1,10 +1,20 @@
 ﻿@model PerformanceComparator.ViewModels.PublicFundDetailViewModel
+@using System.Text.Json
 
 @{
     ViewData["Title"] = Model.Name;
 
     string Pct(decimal d) => (d * 100m).ToString("0.00") + "%";
     string Num(decimal d) => d.ToString("0.00");
+
+    var chartJson = JsonSerializer.Serialize(new[]
+    {
+        new
+        {
+            label = Model.Name,
+            points = Model.CumulativePoints.Select(p => new { x = p.Date.ToString("yyyy-MM-dd"), y = p.Value })
+        }
+    });
 }
 
 <article>
@@ -100,10 +110,8 @@
 
         <section class="mb-4">
             <h2 class="h4">Performance chart</h2>
-            <!-- Chart wired up in a later prompt -->
-            <div id="navChart" class="border rounded d-flex align-items-center justify-content-center text-muted"
-                 style="height: 320px;">
-                Chart coming soon
+            <div style="position: relative; height: 400px; width: 100%;">
+                <canvas id="fundChart"></canvas>
             </div>
         </section>
     }
@@ -114,3 +122,18 @@
 
     <a asp-action="Index" class="btn btn-secondary">Back to Funds</a>
 </article>
+
+@if (Model.HasEnoughData)
+{
+    <script id="fundChartData" type="application/json">@Html.Raw(chartJson)</script>
+
+    @section Scripts {
+        <script src="~/js/charts.js" asp-append-version="true"></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+            const data = JSON.parse(document.getElementById('fundChartData').textContent);
+            renderCumulativeChart('fundChart', data);
+            });
+        </script>
+    }
+}

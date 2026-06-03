@@ -1,14 +1,13 @@
 ﻿@model PerformanceComparator.ViewModels.CompareResultViewModel
 @using PerformanceComparator.ViewModels
+@using System.Text.Json
 
 @{
     ViewData["Title"] = "Comparison Results";
 
-    // ── Formatting helpers ────────────────────────────────────────────────────
     string Pct(decimal d) => (d * 100m).ToString("0.00") + "%";
     string Ratio(decimal d) => d.ToString("0.00");
 
-    // ── Best-value finder (local function — supports named params) ────────────
     int BestIdx(Func<FundMetricsViewModel, decimal> selector, bool higherIsBetter)
     {
         if (!Model.Funds.Any()) return -1;
@@ -20,7 +19,6 @@
     string Best(int colIdx, int bestIdx) =>
         colIdx == bestIdx ? "table-success fw-bold" : "";
 
-    // ── Pre-compute best indices (used in table) ──────────────────────────────
     int bCagr = BestIdx(f => f.Cagr, higherIsBetter: true);
     int bVol = BestIdx(f => f.Volatility, higherIsBetter: false);
     int bSh = BestIdx(f => f.Sharpe, higherIsBetter: true);
@@ -30,10 +28,24 @@
     int bTe = BestIdx(f => f.TrackingError, higherIsBetter: false);
     int bIr = BestIdx(f => f.InformationRatio, higherIsBetter: true);
 
-    // ── Summary values ────────────────────────────────────────────────────────
     var bestSharpe = Model.Funds.Any() ? Model.Funds.OrderByDescending(f => f.Sharpe).First() : null;
     var bestCagr = Model.Funds.Any() ? Model.Funds.OrderByDescending(f => f.Cagr).First() : null;
     var bestDd = Model.Funds.Any() ? Model.Funds.OrderByDescending(f => f.MaxDrawdown).First() : null;
+
+    // ── Serialize chart series to JSON (dates as ISO strings) ─────────────────
+    var cumulativeJson = JsonSerializer.Serialize(
+        Model.CumulativeSeries.Select(s => new
+        {
+            label = s.Label,
+            points = s.Points.Select(p => new { x = p.Date.ToString("yyyy-MM-dd"), y = p.Value })
+        }));
+
+    var drawdownJson = JsonSerializer.Serialize(
+        Model.DrawdownSeries.Select(s => new
+        {
+            label = s.Label,
+            points = s.Points.Select(p => new { x = p.Date.ToString("yyyy-MM-dd"), y = p.Value })
+        }));
 }
 
 <section>
@@ -176,20 +188,36 @@
 
         <section class="mb-4">
             <h2 class="h4">Performance chart</h2>
-            <div id="cumulativeChart" class="border rounded d-flex align-items-center justify-content-center text-muted mb-3"
-                 style="height: 320px;">
-                Chart coming soon
+            <div style="position: relative; height: 400px; width: 100%;">
+                <canvas id="cumulativeChart"></canvas>
             </div>
         </section>
 
         <section class="mb-4">
             <h2 class="h4">Drawdown chart</h2>
-            <div id="drawdownChart" class="border rounded d-flex align-items-center justify-content-center text-muted"
-                 style="height: 240px;">
-                Chart coming soon
+            <div style="position: relative; height: 300px; width: 100%;">
+                <canvas id="drawdownChart"></canvas>
             </div>
         </section>
     }
 
     <a asp-action="Index" class="btn btn-secondary">New comparison</a>
 </section>
+
+@if (Model.Funds.Any())
+{
+    <script id="cumulativeData" type="application/json">@Html.Raw(cumulativeJson)</script>
+    <script id="drawdownData" type="application/json">@Html.Raw(drawdownJson)</script>
+
+    @section Scripts {
+        <script src="~/js/charts.js" asp-append-version="true"></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+            const cumulative = JSON.parse(document.getElementById('cumulativeData').textContent);
+            const drawdown   = JSON.parse(document.getElementById('drawdownData').textContent);
+            renderCumulativeChart('cumulativeChart', cumulative);
+            renderDrawdownChart('drawdownChart', drawdown);
+            });
+        </script>
+    }
+}

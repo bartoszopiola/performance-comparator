@@ -95,6 +95,8 @@ namespace PerformanceComparator.Controllers
                 vm.MaxDrawdown = _risk.MaxDrawdown(ordered);
                 vm.Sharpe = _risk.Sharpe(dailyReturns);
                 vm.Sortino = _risk.Sortino(dailyReturns);
+
+                vm.CumulativePoints = _returns.CumulativeReturnSeries(ordered);
             }
 
             return View(vm);
