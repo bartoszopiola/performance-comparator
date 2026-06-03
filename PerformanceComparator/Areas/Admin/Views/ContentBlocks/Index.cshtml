@@ -1,0 +1,41 @@
+﻿@model List<PerformanceComparator.ViewModels.Admin.ContentBlockListItemViewModel>
+
+@{
+    ViewData["Title"] = "Content Blocks";
+}
+
+<h1>Content Blocks</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Create New</a>
+</p>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Key</th>
+            <th>Title</th>
+            <th>Last updated</th>
+            <th style="width: 160px;">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td><code>@item.Key</code></td>
+                <td>@item.Title</td>
+                <td>@item.UpdatedAt.ToString("yyyy-MM-dd HH:mm")</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary">Edit</a>
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">No content blocks yet.</div>
+}

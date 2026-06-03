@@ -1,31 +1,196 @@
-html {
-  font-size: 14px;
+/* ============================================================
+   Performance Comparator — custom theme & responsive layout
+   ============================================================ */
+
+:root {
+    --primary: #0d4f5c; /* deep teal */
+    --primary-dark: #093a44;
+    --primary-light: #14707f;
+    --accent: #e9a23b; /* warm amber */
+    --accent-dark: #c9831f;
+    --ink: #1a2e35; /* near-black text */
+    --muted: #5c6b73;
+    --surface: #f7f9fa;
+    --border: #d9e2e5;
 }
 
-@media (min-width: 768px) {
-  html {
+/* ── Base ─────────────────────────────────────────────────── */
+html {
     font-size: 16px;
-  }
-}
-
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
-html {
-  position: relative;
-  min-height: 100%;
+    position: relative;
+    min-height: 100%;
 }
 
 body {
-  margin-bottom: 60px;
+    color: var(--ink);
+    background-color: #ffffff;
 }
 
-.form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
-  color: var(--bs-secondary-color);
-  text-align: end;
+a {
+    color: var(--primary);
 }
 
-.form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
-  text-align: start;
+    a:hover {
+        color: var(--primary-dark);
+    }
+
+/* ── Navbar (Flexbox) ─────────────────────────────────────── */
+.navbar {
+    border-bottom: 3px solid var(--primary) !important;
+}
+
+.navbar-brand {
+    font-weight: 700;
+    color: var(--primary) !important;
+    letter-spacing: -0.02em;
+}
+
+.navbar-nav {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.nav-link.text-dark:hover {
+    color: var(--primary) !important;
+}
+
+/* ── Buttons: override Bootstrap primary ──────────────────── */
+.btn-primary {
+    --bs-btn-bg: var(--primary);
+    --bs-btn-border-color: var(--primary);
+    --bs-btn-hover-bg: var(--primary-dark);
+    --bs-btn-hover-border-color: var(--primary-dark);
+    --bs-btn-active-bg: var(--primary-dark);
+    --bs-btn-active-border-color: var(--primary-dark);
+}
+
+.btn-outline-primary {
+    --bs-btn-color: var(--primary);
+    --bs-btn-border-color: var(--primary);
+    --bs-btn-hover-bg: var(--primary);
+    --bs-btn-hover-border-color: var(--primary);
+    --bs-btn-active-bg: var(--primary);
+}
+
+/* ── Card grid (CSS Grid) — funds list & home features ────── */
+.card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 1.5rem;
+}
+
+.card-grid--features {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+/* Hero */
+.hero {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+    color: #fff;
+    border-radius: 0.75rem;
+}
+
+    .hero .btn-outline-secondary {
+        --bs-btn-color: #fff;
+        --bs-btn-border-color: rgba(255,255,255,0.7);
+        --bs-btn-hover-bg: #fff;
+        --bs-btn-hover-color: var(--primary);
+        --bs-btn-hover-border-color: #fff;
+    }
+
+/* Metric tiles */
+.metric-tile {
+    border: 1px solid var(--border);
+    border-radius: 0.5rem;
+    padding: 1rem;
+    text-align: center;
+    height: 100%;
+}
+
+    .metric-tile .metric-label {
+        color: var(--muted);
+        font-size: 0.85rem;
+    }
+
+    .metric-tile .metric-value {
+        font-size: 1.25rem;
+        font-weight: 600;
+    }
+
+/* Highlight best value in comparison table */
+.table-success.fw-bold {
+    background-color: rgba(13, 79, 92, 0.12) !important;
+}
+
+/* Footer (Flexbox) */
+.footer {
+    background-color: var(--surface);
+}
+
+    .footer .container {
+        display: flex;
+        flex-direction: column;
+        gap: 0.15rem;
+    }
+
+/* Chart containers shrink on small screens */
+.chart-container {
+    position: relative;
+    width: 100%;
+    height: 400px;
+}
+
+.chart-container--short {
+    height: 300px;
+}
+
+/* ── Responsive breakpoints ───────────────────────────────── */
+
+/* Mobile (<576px) */
+@media (max-width: 575.98px) {
+    html {
+        font-size: 15px;
+    }
+
+    .card-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .hero {
+        padding: 2rem 1rem !important;
+    }
+
+    .chart-container {
+        height: 300px;
+    }
+
+    .chart-container--short {
+        height: 220px;
+    }
+
+    .display-5 {
+        font-size: 1.8rem;
+    }
+}
+
+/* Tablet (576–992px) */
+@media (min-width: 576px) and (max-width: 991.98px) {
+    .card-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* Desktop (>992px) */
+@media (min-width: 992px) {
+    .card-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+/* Ensure tables never break layout on narrow screens.
+   (Pair with .table-responsive wrapper in markup.) */
+.table-responsive {
+    -webkit-overflow-scrolling: touch;
 }
