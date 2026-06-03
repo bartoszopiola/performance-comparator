@@ -1,0 +1,100 @@
+﻿@model PerformanceComparator.ViewModels.FundsListViewModel
+
+@{
+    ViewData["Title"] = "Funds";
+}
+
+<section>
+    <h1 class="mb-3">Funds</h1>
+
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <label for="assetClassFilter" class="form-label">Filter by asset class</label>
+            <select id="assetClassFilter" class="form-select">
+                <option value="">All asset classes</option>
+                @foreach (var ac in Model.AssetClasses)
+                {
+                    <option value="@ac">@ac</option>
+                }
+            </select>
+        </div>
+    </div>
+
+    @if (!Model.Funds.Any())
+    {
+        <div class="alert alert-info">No funds available yet.</div>
+    }
+    else
+    {
+        <div class="row g-4" id="fundGrid">
+            @foreach (var fund in Model.Funds)
+            {
+                <div class="col-sm-6 col-lg-4 fund-card" data-asset-class="@fund.AssetClassName">
+                    <article class="card h-100">
+                        <div class="card-body d-flex flex-column">
+                            <figure class="text-center mb-3" style="height: 64px;">
+                                @if (!string.IsNullOrEmpty(fund.LogoFileName))
+                                {
+                                    <img src="~/uploads/logos/@fund.LogoFileName" alt="@fund.Name logo"
+                                         style="max-height: 64px; max-width: 100%;" />
+                                }
+                                else
+                                {
+                                    <div class="d-flex align-items-center justify-content-center h-100 text-muted">
+                                        <span>@fund.Symbol</span>
+                                    </div>
+                                }
+                            </figure>
+
+                            <h2 class="h5 card-title">@fund.Name</h2>
+                            <p class="card-text mb-1"><code>@fund.Symbol</code></p>
+                            <p class="card-text text-muted mb-1">@fund.AssetClassName</p>
+                            @if (!string.IsNullOrEmpty(fund.Provider))
+                            {
+                                <p class="card-text text-muted small mb-2">@fund.Provider</p>
+                            }
+
+                            @if (fund.IsBenchmark)
+                            {
+                                <span class="badge bg-secondary mb-2 align-self-start">Benchmark</span>
+                            }
+
+                            <div class="mt-auto">
+                                @if (fund.NavCount >= 2 && fund.NavDataFrom.HasValue && fund.NavDataTo.HasValue)
+                                {
+                                    <span class="badge bg-light text-dark border">
+                                        @fund.NavDataFrom.Value.ToString("yyyy-MM-dd") — @fund.NavDataTo.Value.ToString("yyyy-MM-dd")
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-light text-muted border">No data</span>
+                                }
+
+                                <a asp-action="Details" asp-route-id="@fund.Id" class="btn btn-sm btn-outline-primary mt-2 w-100">
+                                    View details
+                                </a>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            }
+        </div>
+    }
+</section>
+
+@section Scripts {
+    <script>
+        (function () {
+            const filter = document.getElementById('assetClassFilter');
+            const cards = document.querySelectorAll('.fund-card');
+            filter.addEventListener('change', function () {
+                const value = this.value;
+                cards.forEach(function (card) {
+                    const match = value === '' || card.dataset.assetClass === value;
+                    card.style.display = match ? '' : 'none';
+                });
+            });
+        })();
+    </script>
+}

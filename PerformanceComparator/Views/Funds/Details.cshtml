@@ -1,0 +1,116 @@
+﻿@model PerformanceComparator.ViewModels.PublicFundDetailViewModel
+
+@{
+    ViewData["Title"] = Model.Name;
+
+    string Pct(decimal d) => (d * 100m).ToString("0.00") + "%";
+    string Num(decimal d) => d.ToString("0.00");
+}
+
+<article>
+    <header class="d-flex align-items-center gap-3 mb-4">
+        <figure class="mb-0">
+            @if (!string.IsNullOrEmpty(Model.LogoFileName))
+            {
+                <img src="~/uploads/logos/@Model.LogoFileName" alt="@Model.Name logo"
+                     style="max-height: 72px;" class="border rounded" />
+            }
+            else
+            {
+                <div class="d-flex align-items-center justify-content-center border rounded text-muted"
+                     style="width: 72px; height: 72px;">
+                    <span>@Model.Symbol</span>
+                </div>
+            }
+        </figure>
+        <div>
+            <h1 class="mb-0">@Model.Name</h1>
+            <p class="text-muted mb-0"><code>@Model.Symbol</code> &middot; @Model.AssetClassName</p>
+        </div>
+    </header>
+
+    <section class="mb-4">
+        <dl class="row">
+            <dt class="col-sm-3">Provider</dt>
+            <dd class="col-sm-9">@(Model.Provider ?? "—")</dd>
+
+            <dt class="col-sm-3">Currency</dt>
+            <dd class="col-sm-9">@Model.Currency</dd>
+
+            <dt class="col-sm-3">Description</dt>
+            <dd class="col-sm-9">@(Model.Description ?? "—")</dd>
+
+            <dt class="col-sm-3">Data range</dt>
+            <dd class="col-sm-9">
+                @if (Model.NavDataFrom.HasValue && Model.NavDataTo.HasValue)
+                {
+                    @($"{Model.NavDataFrom.Value:yyyy-MM-dd} — {Model.NavDataTo.Value:yyyy-MM-dd} ({Model.NavCount} records)")
+                }
+                else
+                {
+                    <span class="text-muted">No NAV data.</span>
+                }
+            </dd>
+        </dl>
+    </section>
+
+    @if (Model.HasEnoughData)
+    {
+        <section class="mb-4">
+            <h2 class="h4">Key metrics</h2>
+            <div class="row g-3">
+                <div class="col-6 col-md-4 col-lg-2">
+                    <div class="border rounded p-3 text-center h-100">
+                        <div class="text-muted small">Cumulative</div>
+                        <div class="fs-5">@Pct(Model.CumulativeReturn)</div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-4 col-lg-2">
+                    <div class="border rounded p-3 text-center h-100">
+                        <div class="text-muted small">CAGR</div>
+                        <div class="fs-5">@Pct(Model.Cagr)</div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-4 col-lg-2">
+                    <div class="border rounded p-3 text-center h-100">
+                        <div class="text-muted small">Volatility</div>
+                        <div class="fs-5">@Pct(Model.Volatility)</div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-4 col-lg-2">
+                    <div class="border rounded p-3 text-center h-100">
+                        <div class="text-muted small">Max Drawdown</div>
+                        <div class="fs-5">@Pct(Model.MaxDrawdown)</div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-4 col-lg-2">
+                    <div class="border rounded p-3 text-center h-100">
+                        <div class="text-muted small">Sharpe</div>
+                        <div class="fs-5">@Num(Model.Sharpe)</div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-4 col-lg-2">
+                    <div class="border rounded p-3 text-center h-100">
+                        <div class="text-muted small">Sortino</div>
+                        <div class="fs-5">@Num(Model.Sortino)</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="mb-4">
+            <h2 class="h4">Performance chart</h2>
+            <!-- Chart wired up in a later prompt -->
+            <div id="navChart" class="border rounded d-flex align-items-center justify-content-center text-muted"
+                 style="height: 320px;">
+                Chart coming soon
+            </div>
+        </section>
+    }
+    else
+    {
+        <div class="alert alert-info">Not enough NAV data to compute metrics (need at least 2 records).</div>
+    }
+
+    <a asp-action="Index" class="btn btn-secondary">Back to Funds</a>
+</article>
