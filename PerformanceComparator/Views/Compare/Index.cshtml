@@ -1,8 +1,87 @@
-﻿@{
-    ViewData["Title"] = "Compare";
+﻿@model PerformanceComparator.ViewModels.CompareFormViewModel
+
+@{
+    ViewData["Title"] = "Compare Funds";
 }
 
 <section>
-    <h1>Compare</h1>
-    <p class="text-muted">The comparison tool is coming soon.</p>
+    <h1 class="mb-4">Compare Funds</h1>
+
+    @if (ViewBag.FormError != null)
+    {
+        <div class="alert alert-danger">Please fix the errors below before comparing.</div>
+    }
+
+    <form id="compareForm" asp-action="Results" method="post">
+        @Html.AntiForgeryToken()
+
+        <div class="row g-4">
+
+            <div class="col-md-6">
+                <fieldset>
+                    <legend class="h5">Select funds (1–4)</legend>
+
+                    <div class="d-flex gap-2 mb-2">
+                        <select id="fundSelect" class="form-select" aria-label="Pick a fund">
+                            <option value="">-- pick a fund --</option>
+                            @foreach (var f in Model.AllFunds)
+                            {
+                                <option value="@f.Value">@f.Text</option>
+                            }
+                        </select>
+                        <button id="addFundBtn" type="button" class="btn btn-outline-primary text-nowrap">
+                            + Add
+                        </button>
+                    </div>
+
+                    <div id="fundChips" class="mb-2 d-flex flex-wrap"></div>
+                    <div id="fundHiddenInputs"></div>
+                    <small id="fundCount" class="text-muted">0 selected</small>
+                </fieldset>
+            </div>
+
+            <div class="col-md-6">
+                <fieldset>
+                    <legend class="h5">Benchmark</legend>
+                    <select id="benchmarkSelect" name="BenchmarkId" class="form-select" required>
+                        <option value="0">-- select benchmark --</option>
+                        @foreach (var f in Model.BenchmarkFunds)
+                        {
+                            <option value="@f.Value">@f.Text</option>
+                        }
+                    </select>
+                    <div class="form-text">Any fund can act as a benchmark.</div>
+                </fieldset>
+            </div>
+
+            <div class="col-sm-6 col-md-3">
+                <label for="Start" class="form-label">Start date</label>
+                <input type="date" id="Start" name="Start" class="form-control"
+                       value="@Model.DefaultStart.ToString("yyyy-MM-dd")" required />
+            </div>
+
+            <div class="col-sm-6 col-md-3">
+                <label for="End" class="form-label">End date</label>
+                <input type="date" id="End" name="End" class="form-control"
+                       value="@Model.DefaultEnd.ToString("yyyy-MM-dd")" required />
+            </div>
+
+            <div class="col-sm-6 col-md-3">
+                <label for="RiskFreeRate" class="form-label">Risk-free rate (%)</label>
+                <input type="number" id="RiskFreeRate" name="RiskFreeRate" class="form-control"
+                       step="0.01" min="0" max="100"
+                       value="@(Model.DefaultRiskFreeRate * 100m)" required />
+                <div class="form-text">Enter as %, e.g. 2 = 2%.</div>
+            </div>
+
+            <div class="col-12 mt-2">
+                <button type="submit" class="btn btn-primary btn-lg">Porównaj</button>
+            </div>
+
+        </div>
+    </form>
 </section>
+
+@section Scripts {
+    <script src="~/js/compare.js" asp-append-version="true"></script>
+}
