@@ -1,0 +1,195 @@
+﻿@model PerformanceComparator.ViewModels.CompareResultViewModel
+@using PerformanceComparator.ViewModels
+
+@{
+    ViewData["Title"] = "Comparison Results";
+
+    // ── Formatting helpers ────────────────────────────────────────────────────
+    string Pct(decimal d) => (d * 100m).ToString("0.00") + "%";
+    string Ratio(decimal d) => d.ToString("0.00");
+
+    // ── Best-value finder (local function — supports named params) ────────────
+    int BestIdx(Func<FundMetricsViewModel, decimal> selector, bool higherIsBetter)
+    {
+        if (!Model.Funds.Any()) return -1;
+        return higherIsBetter
+            ? Model.Funds.Select((f, i) => (i, v: selector(f))).OrderByDescending(x => x.v).First().i
+            : Model.Funds.Select((f, i) => (i, v: selector(f))).OrderBy(x => x.v).First().i;
+    }
+
+    string Best(int colIdx, int bestIdx) =>
+        colIdx == bestIdx ? "table-success fw-bold" : "";
+
+    // ── Pre-compute best indices (used in table) ──────────────────────────────
+    int bCagr = BestIdx(f => f.Cagr, higherIsBetter: true);
+    int bVol = BestIdx(f => f.Volatility, higherIsBetter: false);
+    int bSh = BestIdx(f => f.Sharpe, higherIsBetter: true);
+    int bSo = BestIdx(f => f.Sortino, higherIsBetter: true);
+    int bDd = BestIdx(f => f.MaxDrawdown, higherIsBetter: true);
+    int bAlpha = BestIdx(f => f.Alpha, higherIsBetter: true);
+    int bTe = BestIdx(f => f.TrackingError, higherIsBetter: false);
+    int bIr = BestIdx(f => f.InformationRatio, higherIsBetter: true);
+
+    // ── Summary values ────────────────────────────────────────────────────────
+    var bestSharpe = Model.Funds.Any() ? Model.Funds.OrderByDescending(f => f.Sharpe).First() : null;
+    var bestCagr = Model.Funds.Any() ? Model.Funds.OrderByDescending(f => f.Cagr).First() : null;
+    var bestDd = Model.Funds.Any() ? Model.Funds.OrderByDescending(f => f.MaxDrawdown).First() : null;
+}
+
+<section>
+    <h1 class="mb-1">Comparison Results</h1>
+    <p class="text-muted mb-4">
+        @Model.Start.ToString("yyyy-MM-dd") — @Model.End.ToString("yyyy-MM-dd")
+        @if (Model.HasBenchmark)
+        {
+            <text>&middot; Benchmark: <strong>@Model.BenchmarkName</strong></text>
+        }
+    </p>
+
+    @if (Model.Notes.Any())
+    {
+        <div class="alert alert-warning">
+            <ul class="mb-0">
+                @foreach (var note in Model.Notes)
+                {
+                    <li>@note</li>
+                }
+            </ul>
+        </div>
+    }
+
+    @if (!Model.Funds.Any())
+    {
+        <div class="alert alert-info">No fund data available for the selected range.</div>
+    }
+    else
+    {
+        <section class="mb-4 p-3 bg-light rounded">
+            <p class="mb-0">
+                Comparing <strong>@Model.Funds.Count</strong> fund(s).
+                @if (Model.HasBenchmark)
+                {
+                    <text>Benchmark: <strong>@Model.BenchmarkName</strong>. </text>
+                }
+                <strong>@bestCagr!.Name</strong> achieved the highest annualized return (CAGR: @Pct(bestCagr.Cagr)).
+                <strong>@bestSharpe!.Name</strong> had the best risk-adjusted return (Sharpe: @Ratio(bestSharpe.Sharpe)).
+                <strong>@bestDd!.Name</strong> experienced the smallest maximum drawdown (@Pct(bestDd.MaxDrawdown)).
+            </p>
+        </section>
+
+        <section class="mb-4">
+            <h2 class="h4">Metrics</h2>
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th scope="col">Metric</th>
+                            @for (int i = 0; i < Model.Funds.Count; i++)
+                            {
+                                <th scope="col">
+                                    @Model.Funds[i].Name
+                                    @if (Model.Funds[i].IsBenchmark)
+                                    {
+                                        <span class="badge bg-secondary ms-1">Benchmark</span>
+                                    }
+                                </th>
+                            }
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>CAGR</td>
+                            @for (int i = 0; i < Model.Funds.Count; i++)
+                            {
+                                <td class="@Best(i, bCagr)">@Pct(Model.Funds[i].Cagr)</td>
+                            }
+                        </tr>
+                        <tr>
+                            <td>Volatility</td>
+                            @for (int i = 0; i < Model.Funds.Count; i++)
+                            {
+                                <td class="@Best(i, bVol)">@Pct(Model.Funds[i].Volatility)</td>
+                            }
+                        </tr>
+                        <tr>
+                            <td>Max Drawdown</td>
+                            @for (int i = 0; i < Model.Funds.Count; i++)
+                            {
+                                <td class="@Best(i, bDd)">@Pct(Model.Funds[i].MaxDrawdown)</td>
+                            }
+                        </tr>
+                        <tr>
+                            <td>Sharpe Ratio</td>
+                            @for (int i = 0; i < Model.Funds.Count; i++)
+                            {
+                                <td class="@Best(i, bSh)">@Ratio(Model.Funds[i].Sharpe)</td>
+                            }
+                        </tr>
+                        <tr>
+                            <td>Sortino Ratio</td>
+                            @for (int i = 0; i < Model.Funds.Count; i++)
+                            {
+                                <td class="@Best(i, bSo)">@Ratio(Model.Funds[i].Sortino)</td>
+                            }
+                        </tr>
+                        @if (Model.HasBenchmark)
+                        {
+                            <tr class="table-light">
+                                <td colspan="@(Model.Funds.Count + 1)" class="text-muted small py-1">
+                                    Benchmark-relative (@Model.BenchmarkName)
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Beta</td>
+                                @for (int i = 0; i < Model.Funds.Count; i++)
+                                {
+                                    <td>@Ratio(Model.Funds[i].Beta)</td>
+                                }
+                            </tr>
+                            <tr>
+                                <td>Alpha (ann.)</td>
+                                @for (int i = 0; i < Model.Funds.Count; i++)
+                                {
+                                    <td class="@Best(i, bAlpha)">@Pct(Model.Funds[i].Alpha)</td>
+                                }
+                            </tr>
+                            <tr>
+                                <td>Tracking Error</td>
+                                @for (int i = 0; i < Model.Funds.Count; i++)
+                                {
+                                    <td class="@Best(i, bTe)">@Pct(Model.Funds[i].TrackingError)</td>
+                                }
+                            </tr>
+                            <tr>
+                                <td>Information Ratio</td>
+                                @for (int i = 0; i < Model.Funds.Count; i++)
+                                {
+                                    <td class="@Best(i, bIr)">@Ratio(Model.Funds[i].InformationRatio)</td>
+                                }
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <p class="text-muted small">Green = best value in row.</p>
+        </section>
+
+        <section class="mb-4">
+            <h2 class="h4">Performance chart</h2>
+            <div id="cumulativeChart" class="border rounded d-flex align-items-center justify-content-center text-muted mb-3"
+                 style="height: 320px;">
+                Chart coming soon
+            </div>
+        </section>
+
+        <section class="mb-4">
+            <h2 class="h4">Drawdown chart</h2>
+            <div id="drawdownChart" class="border rounded d-flex align-items-center justify-content-center text-muted"
+                 style="height: 240px;">
+                Chart coming soon
+            </div>
+        </section>
+    }
+
+    <a asp-action="Index" class="btn btn-secondary">New comparison</a>
+</section>
