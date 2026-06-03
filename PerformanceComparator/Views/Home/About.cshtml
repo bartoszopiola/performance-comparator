@@ -1,0 +1,10 @@
+﻿@model PerformanceComparator.ViewModels.AboutViewModel
+
+@{
+    ViewData["Title"] = Model.Title;
+}
+
+<section>
+    <h1>@Model.Title</h1>
+    <div>@Html.Raw(Model.Body)</div>
+</section>
