@@ -1,6 +1,5 @@
 ﻿/**
- * compare.js — fund chip picker for the Compare form.
- * No frameworks; plain ES2015+ vanilla JS.
+ * compare.js — fund chip picker for the Compare form (vanilla JS).
  */
 (function () {
     'use strict';
@@ -14,27 +13,18 @@
     if (!fundSelect || !addBtn || !chipsBox || !hiddenBox) return;
 
     function selectedIds() {
-        return Array.from(hiddenBox.querySelectorAll('input[name="FundIds"]'))
-            .map(i => i.value);
+        return Array.from(hiddenBox.querySelectorAll('input[name="FundIds"]')).map(i => i.value);
     }
 
     function addFund() {
         const id = fundSelect.value;
         const name = fundSelect.options[fundSelect.selectedIndex]?.text;
-
         if (!id) return;
 
         const ids = selectedIds();
-        if (ids.includes(id)) {
-            alert('This fund is already added.');
-            return;
-        }
-        if (ids.length >= MAX_FUNDS) {
-            alert('You can compare at most ' + MAX_FUNDS + ' funds.');
-            return;
-        }
+        if (ids.includes(id)) { alert('This fund is already added.'); return; }
+        if (ids.length >= MAX_FUNDS) { alert('You can compare at most ' + MAX_FUNDS + ' funds.'); return; }
 
-        // Chip
         const chip = document.createElement('span');
         chip.className = 'badge bg-primary me-2 mb-2 d-inline-flex align-items-center gap-1';
         chip.dataset.id = id;
@@ -54,7 +44,6 @@
         chip.appendChild(removeBtn);
         chipsBox.appendChild(chip);
 
-        // Hidden input for model binding
         const hidden = document.createElement('input');
         hidden.type = 'hidden';
         hidden.name = 'FundIds';
@@ -71,13 +60,10 @@
     }
 
     addBtn.addEventListener('click', addFund);
-
-    // Allow pressing Enter in the dropdown
     fundSelect.addEventListener('keydown', function (e) {
         if (e.key === 'Enter') { e.preventDefault(); addFund(); }
     });
 
-    // Client-side form validation before submit
     const form = document.getElementById('compareForm');
     if (form) {
         form.addEventListener('submit', function (e) {

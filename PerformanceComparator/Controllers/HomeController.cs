@@ -1,8 +1,8 @@
+using PerformanceComparator.Models;
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PerformanceComparator.Data;
-using PerformanceComparator.Models;
 using PerformanceComparator.ViewModels;
 
 namespace PerformanceComparator.Controllers
@@ -56,6 +56,15 @@ namespace PerformanceComparator.Controllers
 
         public IActionResult Privacy()
         {
+            return View();
+        }
+
+        // Friendly handler for non-success status codes (e.g. 404).
+        // Wired via UseStatusCodePagesWithReExecute in Program.cs.
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        public IActionResult Status(int code)
+        {
+            ViewBag.Code = code;
             return View();
         }
 

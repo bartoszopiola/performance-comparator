@@ -2,20 +2,19 @@
 {
     public class HomeViewModel
     {
-        // Sensible defaults shown when the matching ContentBlock is missing.
         public string HeroTitle { get; set; } = "Performance Comparator";
         public string HeroBody { get; set; } =
-            "Porównuj polskie fundusze inwestycyjne (TFI) oraz ETF-y według metryk zwrotu i ryzyka.";
+            "Compare Polish investment funds (TFI) and ETFs by return and risk metrics.";
 
-        public string IntroTitle { get; set; } = "Jak to działa";
+        public string IntroTitle { get; set; } = "How it works";
         public string IntroBody { get; set; } =
-            "Przeglądaj fundusze, analizuj ich historyczne wyniki i porównuj je względem wybranego benchmarku.";
+            "Browse funds, analyze their historical performance, and compare them against a chosen benchmark.";
     }
 
     public class AboutViewModel
     {
-        public string Title { get; set; } = "O projekcie";
+        public string Title { get; set; } = "About the project";
         public string Body { get; set; } =
-            "Performance Comparator to projekt edukacyjny prezentujący metryki wynikowe funduszy inwestycyjnych.";
+            "Performance Comparator is an educational project presenting performance metrics for investment funds.";
     }
 }
