@@ -41,7 +41,7 @@ builder.Services.Configure<Microsoft.AspNetCore.Http.Features.FormOptions>(optio
 
 var app = builder.Build();
 
-// ── Seed database (Admin role + user) ─────────────────────────────────────────
+// ── Seed database (Admin role + user + content blocks) ────────────────────────
 using (var scope = app.Services.CreateScope())
 {
     await SeedData.SeedAsync(scope.ServiceProvider);
@@ -57,6 +57,9 @@ else
     app.UseExceptionHandler("/Home/Error");
     app.UseHsts();
 }
+
+// Friendly pages for 404 and other non-success status codes
+app.UseStatusCodePagesWithReExecute("/Home/Status", "?code={0}");
 
 app.UseHttpsRedirection();
 app.UseRouting();

@@ -1,20 +1,21 @@
 /* ============================================================
-   Performance Comparator — custom theme & responsive layout
+   Performance Comparator — theme, layout, polish (v2)
    ============================================================ */
 
 :root {
-    --primary: #0d4f5c; /* deep teal */
+    --primary: #0d4f5c;
     --primary-dark: #093a44;
     --primary-light: #14707f;
-    --accent: #e9a23b; /* warm amber */
-    --accent-dark: #c9831f;
-    --ink: #1a2e35; /* near-black text */
+    --accent: #e9a23b;
+    --accent-dark: #b9791a; /* darker for text contrast on white */
+    --ink: #16252b;
     --muted: #5c6b73;
-    --surface: #f7f9fa;
+    --surface: #f4f7f8;
     --border: #d9e2e5;
+    --shadow: 0 2px 8px rgba(13, 79, 92, 0.08);
+    --shadow-lg: 0 8px 24px rgba(13, 79, 92, 0.14);
 }
 
-/* ── Base ─────────────────────────────────────────────────── */
 html {
     font-size: 16px;
     position: relative;
@@ -23,7 +24,7 @@ html {
 
 body {
     color: var(--ink);
-    background-color: #ffffff;
+    background-color: #fff;
 }
 
 a {
@@ -34,9 +35,21 @@ a {
         color: var(--primary-dark);
     }
 
+    /* ── Accessibility: visible focus on all interactive elements ── */
+    a:focus-visible,
+    button:focus-visible,
+    .btn:focus-visible,
+    .form-control:focus,
+    .form-select:focus {
+        outline: 3px solid rgba(13, 79, 92, 0.35);
+        outline-offset: 2px;
+        box-shadow: none;
+    }
+
 /* ── Navbar (Flexbox) ─────────────────────────────────────── */
 .navbar {
     border-bottom: 3px solid var(--primary) !important;
+    box-shadow: var(--shadow);
 }
 
 .navbar-brand {
@@ -51,11 +64,23 @@ a {
     gap: 0.25rem;
 }
 
-.nav-link.text-dark:hover {
-    color: var(--primary) !important;
+.nav-link.text-dark {
+    transition: color 0.15s ease;
 }
 
-/* ── Buttons: override Bootstrap primary ──────────────────── */
+    .nav-link.text-dark:hover {
+        color: var(--primary) !important;
+    }
+
+/* ── Buttons ──────────────────────────────────────────────── */
+.btn {
+    transition: transform 0.08s ease, box-shadow 0.15s ease;
+}
+
+    .btn:active {
+        transform: translateY(1px);
+    }
+
 .btn-primary {
     --bs-btn-bg: var(--primary);
     --bs-btn-border-color: var(--primary);
@@ -73,7 +98,19 @@ a {
     --bs-btn-active-bg: var(--primary);
 }
 
-/* ── Card grid (CSS Grid) — funds list & home features ────── */
+/* ── Cards ────────────────────────────────────────────────── */
+.card {
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.card-grid .card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+}
+
+/* ── Card grid (CSS Grid) ─────────────────────────────────── */
 .card-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
@@ -84,12 +121,22 @@ a {
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
 }
 
-/* Hero */
+/* ── Hero ─────────────────────────────────────────────────── */
 .hero {
     background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
     color: #fff;
-    border-radius: 0.75rem;
+    border-radius: 0.85rem;
+    box-shadow: var(--shadow-lg);
 }
+
+    .hero .lead {
+        opacity: 0.95;
+    }
+
+    .hero .btn-light {
+        --bs-btn-color: var(--primary);
+        font-weight: 600;
+    }
 
     .hero .btn-outline-secondary {
         --bs-btn-color: #fff;
@@ -99,13 +146,14 @@ a {
         --bs-btn-hover-border-color: #fff;
     }
 
-/* Metric tiles */
+/* ── Metric tiles ─────────────────────────────────────────── */
 .metric-tile {
     border: 1px solid var(--border);
-    border-radius: 0.5rem;
+    border-radius: 0.6rem;
     padding: 1rem;
     text-align: center;
     height: 100%;
+    background: var(--surface);
 }
 
     .metric-tile .metric-label {
@@ -116,14 +164,36 @@ a {
     .metric-tile .metric-value {
         font-size: 1.25rem;
         font-weight: 600;
+        color: var(--primary-dark);
     }
 
-/* Highlight best value in comparison table */
+/* ── Tables ───────────────────────────────────────────────── */
+.table > thead {
+    background-color: var(--surface);
+}
+
 .table-success.fw-bold {
     background-color: rgba(13, 79, 92, 0.12) !important;
 }
 
-/* Footer (Flexbox) */
+/* ── Charts: fixed-height containers that never overflow ──── */
+.chart-container {
+    position: relative;
+    width: 100%;
+    height: 400px;
+    margin-bottom: 1rem;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 0.6rem;
+    padding: 0.75rem;
+    overflow: hidden;
+}
+
+.chart-container--short {
+    height: 300px;
+}
+
+/* ── Footer (Flexbox) ─────────────────────────────────────── */
 .footer {
     background-color: var(--surface);
 }
@@ -134,15 +204,11 @@ a {
         gap: 0.15rem;
     }
 
-/* Chart containers shrink on small screens */
-.chart-container {
-    position: relative;
-    width: 100%;
-    height: 400px;
-}
-
-.chart-container--short {
-    height: 300px;
+/* ── Empty-state helper ───────────────────────────────────── */
+.empty-state {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: var(--muted);
 }
 
 /* ── Responsive breakpoints ───────────────────────────────── */
@@ -189,8 +255,6 @@ a {
     }
 }
 
-/* Ensure tables never break layout on narrow screens.
-   (Pair with .table-responsive wrapper in markup.) */
 .table-responsive {
     -webkit-overflow-scrolling: touch;
 }

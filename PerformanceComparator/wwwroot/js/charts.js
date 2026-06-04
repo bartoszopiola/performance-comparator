@@ -8,8 +8,8 @@
 (function (global) {
     'use strict';
 
-    const PALETTE = ['#0d6efd', '#dc3545', '#198754', '#fd7e14', '#6f42c1'];
-    const plFmt = new Intl.NumberFormat('pl-PL', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    const PALETTE = ['#0d4f5c', '#dc3545', '#e9a23b', '#6f42c1', '#198754'];
+    const fmt = new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
     function hexToRgba(hex, alpha) {
         const r = parseInt(hex.slice(1, 3), 16);
@@ -23,7 +23,7 @@
             x: {
                 type: 'time',
                 time: { unit: 'month', tooltipFormat: 'yyyy-MM-dd' },
-                title: { display: true, text: 'Data' }
+                title: { display: true, text: 'Date' }
             },
             y: {
                 title: { display: true, text: yTitle }
@@ -56,13 +56,13 @@
                 responsive: true,
                 maintainAspectRatio: false,
                 interaction: { mode: 'index', intersect: false },
-                scales: baseTimeScale('Zwrot skumulowany (start = 100)'),
+                scales: baseTimeScale('Cumulative return (start = 100)'),
                 plugins: {
                     legend: { position: 'top' },
                     tooltip: {
                         callbacks: {
                             label: function (item) {
-                                return item.dataset.label + ': ' + plFmt.format(item.parsed.y);
+                                return item.dataset.label + ': ' + fmt.format(item.parsed.y);
                             }
                         }
                     }
@@ -79,7 +79,6 @@
             const color = PALETTE[i % PALETTE.length];
             return {
                 label: s.label,
-                // values are decimals (e.g. -0.18) → show as percentage
                 data: s.points.map(function (p) { return { x: p.x, y: p.y * 100 }; }),
                 borderColor: color,
                 backgroundColor: hexToRgba(color, 0.2),
@@ -98,7 +97,7 @@
                 maintainAspectRatio: false,
                 interaction: { mode: 'index', intersect: false },
                 scales: (function () {
-                    const s = baseTimeScale('Obsunięcie (%)');
+                    const s = baseTimeScale('Drawdown (%)');
                     s.y.max = 0;
                     return s;
                 })(),
@@ -107,7 +106,7 @@
                     tooltip: {
                         callbacks: {
                             label: function (item) {
-                                return item.dataset.label + ': ' + plFmt.format(item.parsed.y) + '%';
+                                return item.dataset.label + ': ' + fmt.format(item.parsed.y) + '%';
                             }
                         }
                     }
@@ -116,7 +115,6 @@
         });
     }
 
-    // Expose globally
     global.renderCumulativeChart = renderCumulativeChart;
     global.renderDrawdownChart = renderDrawdownChart;
 })(window);

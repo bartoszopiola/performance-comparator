@@ -5,13 +5,8 @@ using PerformanceComparator.Models;
 namespace PerformanceComparator.Data
 {
     /// <summary>
-    /// Seeds the database with the Admin role, a default admin user, and baseline
-    /// content blocks. Called once from Program.cs before app.Run().
-    ///
-    /// Default admin credentials (for the university course):
-    ///   Email:    admin@local.test
-    ///   Password: Admin123!
-    /// (Overridable via AdminSeed:Email / AdminSeed:Password in configuration.)
+    /// Seeds the Admin role, a default admin user, and baseline content blocks.
+    /// Default admin: admin@local.test / Admin123! (overridable via AdminSeed config).
     /// </summary>
     public static class SeedData
     {
@@ -22,12 +17,10 @@ namespace PerformanceComparator.Data
             var config = services.GetRequiredService<IConfiguration>();
             var context = services.GetRequiredService<ApplicationDbContext>();
 
-            // ── Admin role ─────────────────────────────────────────────────────
             const string adminRole = "Admin";
             if (!await roleManager.RoleExistsAsync(adminRole))
                 await roleManager.CreateAsync(new IdentityRole(adminRole));
 
-            // ── Admin user ─────────────────────────────────────────────────────
             var email = config["AdminSeed:Email"] ?? "admin@local.test";
             var password = config["AdminSeed:Password"] ?? "Admin123!";
 
@@ -40,7 +33,6 @@ namespace PerformanceComparator.Data
                     Email = email,
                     EmailConfirmed = true
                 };
-
                 var result = await userManager.CreateAsync(admin, password);
                 if (result.Succeeded)
                     await userManager.AddToRoleAsync(admin, adminRole);
@@ -50,19 +42,18 @@ namespace PerformanceComparator.Data
                 await userManager.AddToRoleAsync(existing, adminRole);
             }
 
-            // ── Content blocks ─────────────────────────────────────────────────
             await SeedContentBlockAsync(context, "home.hero",
                 "Performance Comparator",
-                "Porównuj polskie fundusze inwestycyjne (TFI) oraz ETF-y według metryk zwrotu i ryzyka.");
+                "Compare Polish investment funds (TFI) and ETFs by return and risk metrics.");
 
             await SeedContentBlockAsync(context, "home.intro",
-                "Jak to działa",
-                "Przeglądaj fundusze, analizuj ich historyczne wyniki i porównuj je względem wybranego benchmarku.");
+                "How it works",
+                "Browse funds, analyze their historical performance, and compare them against a chosen benchmark.");
 
             await SeedContentBlockAsync(context, "about.body",
-                "O projekcie",
-                "Performance Comparator to projekt edukacyjny prezentujący metryki wynikowe funduszy inwestycyjnych. " +
-                "Dane służą wyłącznie celom edukacyjnym i nie stanowią porady inwestycyjnej.");
+                "About the project",
+                "Performance Comparator is an educational project that presents performance metrics for investment funds. " +
+                "All data is for educational purposes only and does not constitute investment advice.");
 
             await context.SaveChangesAsync();
         }

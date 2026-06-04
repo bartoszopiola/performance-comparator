@@ -188,15 +188,15 @@
 
         <section class="mb-4">
             <h2 class="h4">Performance chart</h2>
-            <div style="position: relative; height: 400px; width: 100%;">
-                <canvas id="cumulativeChart"></canvas>
+            <div class="chart-container">
+                <canvas id="cumulativeChart" role="img" aria-label="Cumulative return chart for compared funds"></canvas>
             </div>
         </section>
 
         <section class="mb-4">
             <h2 class="h4">Drawdown chart</h2>
-            <div style="position: relative; height: 300px; width: 100%;">
-                <canvas id="drawdownChart"></canvas>
+            <div class="chart-container chart-container--short">
+                <canvas id="drawdownChart" role="img" aria-label="Drawdown chart for compared funds"></canvas>
             </div>
         </section>
     }

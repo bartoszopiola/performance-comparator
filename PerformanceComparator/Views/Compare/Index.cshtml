@@ -9,7 +9,7 @@
 
     @if (ViewBag.FormError != null)
     {
-        <div class="alert alert-danger">Please fix the errors below before comparing.</div>
+        <div class="alert alert-danger">Please fix the errors in the form before comparing.</div>
     }
 
     <form id="compareForm" asp-action="Results" method="post">
@@ -22,8 +22,9 @@
                     <legend class="h5">Select funds (1–4)</legend>
 
                     <div class="d-flex gap-2 mb-2">
-                        <select id="fundSelect" class="form-select" aria-label="Pick a fund">
-                            <option value="">-- pick a fund --</option>
+                        <label for="fundSelect" class="visually-hidden">Select a fund</label>
+                        <select id="fundSelect" class="form-select">
+                            <option value="">-- select a fund --</option>
                             @foreach (var f in Model.AllFunds)
                             {
                                 <option value="@f.Value">@f.Text</option>
@@ -43,6 +44,7 @@
             <div class="col-md-6">
                 <fieldset>
                     <legend class="h5">Benchmark</legend>
+                    <label for="benchmarkSelect" class="form-label">Reference fund</label>
                     <select id="benchmarkSelect" name="BenchmarkId" class="form-select" required>
                         <option value="0">-- select benchmark --</option>
                         @foreach (var f in Model.BenchmarkFunds)
@@ -70,12 +72,12 @@
                 <label for="RiskFreeRate" class="form-label">Risk-free rate (%)</label>
                 <input type="number" id="RiskFreeRate" name="RiskFreeRate" class="form-control"
                        step="0.01" min="0" max="100"
-                       value="@(Model.DefaultRiskFreeRate * 100m)" required />
+                       value="@(Model.DefaultRiskFreeRate)" required />
                 <div class="form-text">Enter as %, e.g. 2 = 2%.</div>
             </div>
 
             <div class="col-12 mt-2">
-                <button type="submit" class="btn btn-primary btn-lg">Porównaj</button>
+                <button type="submit" class="btn btn-primary btn-lg">Compare</button>
             </div>
 
         </div>
