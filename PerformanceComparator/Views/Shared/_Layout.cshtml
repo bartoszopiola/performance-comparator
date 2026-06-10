@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/PerformanceComparator.styles.css" asp-append-version="true" />
 </head>
-<body class="d-flex flex-column min-vh-100">
+<body>
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
@@ -45,15 +45,13 @@
         </nav>
     </header>
 
-    <main role="main" class="container flex-grow-1 pb-3">
+    <main class="container" role="main">
         @RenderBody()
     </main>
 
-    <footer class="border-top footer text-muted mt-auto py-3">
+    <footer class="footer">
         <div class="container">
-            <p class="mb-1 small">
-                For educational purposes only. This is not investment advice.
-            </p>
+            <p class="mb-1 small">For educational purposes only. This is not investment advice.</p>
             <p class="mb-0 small">
                 &copy; 2026 Performance Comparator &middot;
                 <a href="https://github.com/" target="_blank" rel="noopener">GitHub</a>
