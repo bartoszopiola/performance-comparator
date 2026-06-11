@@ -367,12 +367,10 @@ FodyWeavers.xsd
 *.db-shm
 *.db-wal
 
-# User uploads
+# User uploads (keep folder structure, ignore content)
 wwwroot/uploads/*
+!wwwroot/uploads/.gitkeep
 !wwwroot/uploads/logos/.gitkeep
 
 # Local config with secrets
 appsettings.Development.json
-/PerformanceComparator/appsettings.Development.json
-/PerformanceComparator/wwwroot/uploads/logos/00af9c3c5d6d416b9462373b860cd08f.png
-/PerformanceComparator/wwwroot/uploads/logos/c36f7ed0c99243f986b9db270441e320.png
