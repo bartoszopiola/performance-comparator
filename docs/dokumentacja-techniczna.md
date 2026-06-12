@@ -10,7 +10,7 @@ najważniejsze decyzje projektowe. Przeznaczony dla osoby oceniającej projekt.
 Aplikacja realizuje wzorzec **MVC (Model-View-Controller)** w ASP.NET Core, z wyraźnym
 podziałem na warstwy:
 
-**Kontrolery (cienkie).** Kontrolery przyjmują żądania HTTP, walidują dane wejściowe,
+**Kontrolery.** Kontrolery przyjmują żądania HTTP, walidują dane wejściowe,
 wołają odpowiednie serwisy i przekazują wynik do widoku. **Nie zawierają logiki
 obliczeniowej** — ich rola ogranicza się do sterowania przepływem. Kontrolery publiczne
 (`Home`, `Funds`, `Compare`) znajdują się w `Controllers/`, a kontrolery administracyjne
