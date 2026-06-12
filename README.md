@@ -107,9 +107,6 @@ Konto administratora tworzone jest automatycznie przy pierwszym uruchomieniu:
 | E-mail | `admin@local.test` |
 | Hasło | `Admin123!` |
 
-> Dane można nadpisać w pliku `appsettings.Development.json` w sekcji
-> `AdminSeed` (klucze `Email` i `Password`).
-
 ---
 
 ## Jak zaimportować dane
