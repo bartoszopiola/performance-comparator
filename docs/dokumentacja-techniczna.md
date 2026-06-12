@@ -198,13 +198,6 @@ zapewnia jednolite miejsce dla całej matematyki, ułatwia testowanie (serwisy t
 uruchamiania aplikacji ani bazy — z danymi w pamięci) i utrzymuje kontrolery cienkimi.
 Interfejsy umożliwiają podmianę implementacji i wstrzykiwanie zależności.
 
-**Dlaczego import CSV zamiast API na żywo?** Projekt realizowany jest w fazie 1 (zakres
-uniwersytecki), w której dane wprowadza administrator ręcznie poprzez upload plików CSV.
-Rezygnacja z integracji z zewnętrznymi API na żywo upraszcza projekt, eliminuje zależność od
-dostępności i limitów usług zewnętrznych oraz pozwala skupić się na logice obliczeniowej i
-architekturze. Pobieranie danych z zewnętrznych źródeł (np. API) przewidziano jako rozszerzenie
-w fazie 2.
-
 **Dlaczego ViewModele zamiast encji w widokach?** Oddzielenie modelu prezentacji od modelu
 danych zapobiega przekazywaniu do widoku pól, które nie powinny być widoczne, i pozwala
 dostosować kształt danych do potrzeb konkretnego widoku.
